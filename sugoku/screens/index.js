@@ -1,0 +1,5 @@
+export { default as Home } from './Home'
+export { default as Game } from './Game'
+export { default as Option } from './Option'
+export { default as HowToPlay } from './HowToPlay'
+export {default as End} from './End'
