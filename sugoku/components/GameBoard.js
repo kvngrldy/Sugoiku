@@ -14,7 +14,7 @@ export default function GameBoard({ difficulty }) {
     const initialBoard = useSelector(state => state.board)
     const solved = useSelector(state => state.isSolved)
     const dispatch = useDispatch()
-
+    const [message, setMessage] = useState('unsolved')
 
     useEffect(() => {
         dispatch(getBoardAsync(difficulty))
@@ -68,9 +68,10 @@ export default function GameBoard({ difficulty }) {
         })
             .then((response) => response.json())
             .then((response) => {
-                console.log(response.status)
+                
                 if (response.status == 'solved') {
                     dispatch(isSolved(true))
+                    setMessage(response.status)
                 } else {
                     dispatch(isSolved(false))
                 }
@@ -111,7 +112,8 @@ export default function GameBoard({ difficulty }) {
                 <MaterialCommunityIcons name="hand-okay" size={24} color="black" />
                     <Text  style={{ margin: 10, fontSize: 16, fontWeight: 'bold' }}>Validate</Text>
                 </Button>
-
+                
+                <Text style={{fontSize: 20, fontWeight: 'bold'}}>{message.toUpperCase()}</Text>
             
             </View>
 

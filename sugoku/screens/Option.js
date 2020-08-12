@@ -26,7 +26,7 @@ const Option = ({ navigation }) => {
                     source={require('../assets/WHOAREYOU.png')}
                 />
                 <Item rounded>
-                    <Input onChangeText={(text) => usernameCheck(text)} placeholder='Enter Username!' />
+                    <Input style={{marginHorizontal: 30}} onChangeText={(text) => usernameCheck(text)} placeholder='Enter Username!' />
                 </Item>
             </View>
             
