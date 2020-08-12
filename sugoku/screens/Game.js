@@ -10,8 +10,8 @@ export default function Game({ navigation, route }) {
     const { difficulty, username } = route.params
     const isSolved = useSelector(state => state.isSolved)
     const board = useSelector(state => state.board)
-    const [mins, setMins] = useState(0)
-    const [secs, setSecs] = useState(5)
+    const [mins, setMins] = useState(1)
+    const [secs, setSecs] = useState(30)
     const txt = difficulty.toUpperCase()
     useEffect(() => {
 
