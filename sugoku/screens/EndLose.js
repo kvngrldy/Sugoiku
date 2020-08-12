@@ -11,12 +11,12 @@ const End = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <View style={styles.message}>
-                <Text style={{ fontSize: 18 }}>Congratulation, {username} you successfuly solve the puzzle</Text>
+                <Text style={{ fontSize: 18 }}>Sorry, {username} you run out of time</Text>
                 </View>
             <View style={styles.btn}>
                <Button  onPress={() => navigation.navigate('Home')} iconLeft bordered primary>
             <AntDesign name="home" size={30} color="black" />
-                <Text  style={{ margin: 10, fontSize: 20, fontWeight: 'bold' }}>Play Again!</Text>
+                <Text  style={{ margin: 10, fontSize: 20, fontWeight: 'bold' }}>Let me try again!</Text>
             </Button> 
             </View>
 

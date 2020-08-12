@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native'
-import { color } from 'react-native-reanimated';
-import axios from 'axios'
-import { Button } from 'react-native-elements';
+
+import { StyleSheet, Text, View, TextInput } from 'react-native'
+import {  Button } from 'native-base';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+
 import { useDispatch, useSelector } from 'react-redux'
 import { getBoardAsync, isSolved } from '../store/actions/boardActions'
 
@@ -12,25 +12,25 @@ export default function GameBoard({ difficulty }) {
 
     const [newBoard, setNewBoard] = useState([])
     const initialBoard = useSelector(state => state.board)
-
     const solved = useSelector(state => state.isSolved)
-    //const solvingBoard = {board: initialBoard}
     const dispatch = useDispatch()
 
 
     useEffect(() => {
         dispatch(getBoardAsync(difficulty))
-        console.log(`status initial`, solved)
+
     }, [])
 
 
-    useEffect(() => {
-        console.log(`status`, solved)
-    }, [solved])
+
 
     useEffect(() => {
-        setNewBoard(initialBoard)
+
+        console.log(solved, `dariboardatas`)
         dispatch(isSolved(false))
+        setNewBoard(initialBoard)
+
+        console.log(solved, `dariboardbwh`)
     }, [initialBoard])
 
     const encodeBoard = (board) => board.reduce((result, row, i) => result + `%5B${encodeURIComponent(row)}%5D${i === board.length - 1 ? '' : '%2C'}`, '')
@@ -44,7 +44,7 @@ export default function GameBoard({ difficulty }) {
         const data = {
             board: initialBoard
         }
-
+        console.log('solveeee')
         fetch('https://sugoku.herokuapp.com/solve', {
             method: 'POST',
             body: encodeParams(data),
@@ -52,7 +52,6 @@ export default function GameBoard({ difficulty }) {
         })
             .then(response => response.json())
             .then((response) => {
-                dispatch(isSolved(true))
                 setNewBoard(response.solution)
             })
             .catch(console.log)
@@ -70,42 +69,31 @@ export default function GameBoard({ difficulty }) {
             .then((response) => response.json())
             .then((response) => {
                 console.log(response.status)
+                if (response.status == 'solved') {
+                    dispatch(isSolved(true))
+                } else {
+                    dispatch(isSolved(false))
+                }
             })
-            .catch(console.warn);
+            .catch(console.log);
     };
 
 
 
 
     const boardHandler = (text, line, column) => {
-
         let boardClone = JSON.parse(JSON.stringify(newBoard))
-        //console.log(newBoard, `<><><><>`)
         boardClone[line].splice(column, 1, Number(text))
-
         setNewBoard(boardClone)
     }
 
     return (
         <View style={styles.board}>
-            <Button title="Solve Button" onPress={() => solveBoard()} />
-            <Button title="Validate" onPress={() => validateBoard()} />
-            {solved == false ? initialBoard.map((line, row) => (
+            {newBoard.map((line, row) => (
                 <View style={row == 2 || row == 5 ? styles.rowMargin : styles.rowDefault} key={row}>
                     {line.map((box, column) => (
                         <View style={column == 2 || column == 5 ? styles.columnMargin : styles.columnDefault} key={column}>
-                            {box === 0 ? <TextInput maxLength={1} keyboardType={'numeric'} onChangeText={(text) => boardHandler(text, row, column)} style={styles.boxInput}>
-                            </TextInput> : <Text style={styles.boxDefault}>
-                                    {box}
-                                </Text>}
-                        </View>
-                    ))}
-                </View>
-            )) : newBoard.map((line, row) => (
-                <View style={row == 2 || row == 5 ? styles.rowMargin : styles.rowDefault} key={row}>
-                    {line.map((box, column) => (
-                        <View style={column == 2 || column == 5 ? styles.columnMargin : styles.columnDefault} key={column}>
-                            {box === 0 ? <TextInput onChangeText={(text) => boardHandler(text, row, column)} style={styles.boxInput}>
+                            {initialBoard[row][column] === 0 ? <TextInput maxLength={1} keyboardType={'numeric'} onChangeText={(text) => boardHandler(text, row, column)} style={styles.boxInput} value={box > 0 ? String(box) : ""}>
                             </TextInput> : <Text style={styles.boxDefault}>
                                     {box}
                                 </Text>}
@@ -113,7 +101,20 @@ export default function GameBoard({ difficulty }) {
                     ))}
                 </View>
             ))}
-            <StatusBar style="auto" />
+            <View style={styles.btnstyle}>
+                <Button onPress={() => solveBoard()} large bordered iconLeft>
+                <AntDesign name="rocket1" size={30} color="black" />
+                    <Text  style={{ margin: 10, fontSize: 16, fontWeight: 'bold' }}>Auto Solve</Text>
+                </Button>
+
+                <Button onPress={() => validateBoard()} large bordered iconLeft>
+                <MaterialCommunityIcons name="hand-okay" size={24} color="black" />
+                    <Text  style={{ margin: 10, fontSize: 16, fontWeight: 'bold' }}>Validate</Text>
+                </Button>
+
+            
+            </View>
+
         </View>
     )
 }
@@ -125,17 +126,25 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 
     },
+    btnstyle: {
+        flex: 1,
+        width: 400,
+        flexDirection: 'row',
+        marginVertical:30,
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
     boxInput: {
         width: 42,
         height: 42,
         borderWidth: 0.3,
         borderRadius: 7,
-       // elevation: 90,
+        // elevation: 90,
         textAlign: "center",
         textAlignVertical: "center",
-        backgroundColor: '#F8F8F8',
-        fontSize: 18,
-        color: 'red',
+        backgroundColor: '#f9f8eb',
+        fontSize: 27,
+        color: '#fd5f00',
         fontWeight: 'bold'
     },
 
@@ -146,11 +155,11 @@ const styles = StyleSheet.create({
         textAlign: "center",
         borderRadius: 7,
         textAlignVertical: "center",
-        backgroundColor: '#F8F8F8',
+        backgroundColor: '#f9f8eb',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 27,
         borderWidth: 0.3,
-        color: 'grey',
+        color: '#05004e',
 
     },
 
@@ -165,7 +174,7 @@ const styles = StyleSheet.create({
 
     columnDefault: {
         margin: 1,
-        
+
     },
 
     columnMargin: {

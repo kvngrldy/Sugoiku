@@ -1,11 +1,20 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { Button } from 'react-native-elements';
+import { StyleSheet, Text, View, Image } from 'react-native'
 
-const Home = ({navigation}) => {
+import {  Button } from 'native-base';
+
+
+const Home = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Text style={{margin:30, fontWeight:'bold'}}>Home</Text>
+            
+            
+            <Image
+        source={require('../assets/SUGOIKU.png')}
+      />
+      <Button style={{alignSelf: 'center',  justifyContent: 'center'}} onPress={() => navigation.navigate('Option')} large bordered dark>
+            <Text style={{margin: 10, fontSize: 20, fontWeight: 'bold'} }>Let's Play!</Text>
+          </Button>
             <Button
                 title="Let's Play!"
                 onPress={() => navigation.navigate('Option')}
